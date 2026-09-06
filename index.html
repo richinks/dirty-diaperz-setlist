@@ -429,8 +429,8 @@
 <body data-id="0">
     <app-icon data-id="1" hidden data-icon="music" data-palette="Earth"></app-icon>
 
-    <!-- ====== LOGIN SCREEN ====== -->
-    <div data-id="2" id="login-screen">
+    <!-- ====== LOGIN SCREEN (visible by default) ====== -->
+    <div data-id="2" id="login-screen" style="display: flex;">
         <div data-id="3" class="login-card" id="login-card-x7k2">
             <div data-id="4" class="login-emoji" id="login-emoji-d3f1">🥁</div>
             <h1 data-id="5" class="login-title" id="login-title-p8q4">DIRTY DIAPERZ</h1>
@@ -544,10 +544,16 @@
     (function() {
         "use strict";
 
-        // ====== ICONS ======
-        if (typeof lucide !== "undefined" && typeof lucide.createIcons === "function") {
-            lucide.createIcons();
+        // ====== ICONS (guarded — lucide loads with defer) ======
+        function initIcons() {
+            if (typeof lucide !== "undefined" && typeof lucide.createIcons === "function") {
+                lucide.createIcons();
+            }
         }
+        // Run now if already loaded, otherwise wait for DOMContentLoaded / load
+        initIcons();
+        document.addEventListener("DOMContentLoaded", initIcons);
+        window.addEventListener("load", initIcons);
 
         // ====== SUPABASE CONFIG ======
         var SUPABASE_URL = 'https://ejdpcizxmbvxbzipwsfb.supabase.co';
@@ -705,6 +711,8 @@
         function showApp() {
             loginScreen.style.display = "none";
             appWrapper.style.display = "block";
+            // Re-render icons now that app wrapper is visible
+            initIcons();
             // Initialize the app content if not already done
             if (!appInitialized) {
                 appInitialized = true;
@@ -873,6 +881,8 @@
         }
 
         // ====== SUPABASE FETCH ======
+        // BUG FIX #1: Removed .order('order_index', { ascending: true }) — that column
+        // does not exist in the table. Songs are sorted A-Z client-side after fetching.
         async function fetchSongsFromSupabase() {
             if (!supabaseClient) {
                 showSongListError(
@@ -885,8 +895,7 @@
             try {
                 var result = await supabaseClient
                     .from('songs')
-                    .select('*')
-                    .order('order_index', { ascending: true });
+                    .select('*');
 
                 var data = result.data;
                 var error = result.error;
@@ -1353,6 +1362,10 @@
         }
 
         // ====== START: Check session ======
+        // BUG FIX #2: Ensure login screen shows by default.
+        // checkSession() calls getSession() and only shows the app if an active session exists.
+        // The login screen is visible (display:flex) and app-wrapper hidden (display:none) in the HTML,
+        // so even if this code fails, the login screen is what the user sees.
         if (document.readyState === "loading") {
             document.addEventListener("DOMContentLoaded", function() {
                 checkSession();
