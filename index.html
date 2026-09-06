@@ -74,6 +74,168 @@
         ::-webkit-scrollbar-thumb { background: #444; border-radius: 3px; }
         ::-webkit-scrollbar-thumb:hover { background: #666; }
 
+        /* ====== LOGIN SCREEN ====== */
+        #login-screen {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #0f0f0f;
+            padding: 16px;
+        }
+        .login-card {
+            background: #161616;
+            border-radius: 16px;
+            padding: 40px 32px 36px;
+            max-width: 420px;
+            width: 100%;
+            border: 1px solid #232323;
+        }
+        .login-emoji {
+            font-size: 64px;
+            text-align: center;
+            line-height: 1;
+            margin-bottom: 16px;
+        }
+        .login-title {
+            font-family: 'Russo One', sans-serif;
+            color: #FF6B00;
+            font-size: 28px;
+            letter-spacing: 4px;
+            text-align: center;
+            margin-bottom: 4px;
+        }
+        .login-subtitle {
+            text-align: center;
+            color: #808080;
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            margin-bottom: 28px;
+        }
+        .auth-tabs {
+            display: flex;
+            border-bottom: 1px solid #2a2a2a;
+            margin-bottom: 24px;
+        }
+        .auth-tab {
+            flex: 1;
+            background: transparent;
+            border: none;
+            color: #808080;
+            font-family: 'Inter', sans-serif;
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            padding: 12px 8px;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: all 0.15s;
+        }
+        .auth-tab.active {
+            color: #FF6B00;
+            border-bottom-color: #FF6B00;
+        }
+        .auth-tab:hover:not(.active) {
+            color: #b0b0b0;
+        }
+        .auth-input {
+            width: 100%;
+            background: #1c1c1c;
+            border: 1px solid #2a2a2a;
+            border-radius: 10px;
+            padding: 14px 16px;
+            color: #e0e0e0;
+            font-size: 16px;
+            font-family: 'Inter', sans-serif;
+            margin-bottom: 14px;
+            transition: border-color 0.15s;
+        }
+        .auth-input:focus {
+            outline: none;
+            border-color: #FF6B00;
+        }
+        .auth-input::placeholder {
+            color: #606060;
+        }
+        .auth-btn {
+            width: 100%;
+            background: #FF6B00;
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            padding: 16px;
+            font-family: 'Russo One', sans-serif;
+            font-size: 15px;
+            letter-spacing: 1.5px;
+            cursor: pointer;
+            transition: background 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            min-height: 52px;
+            margin-top: 4px;
+        }
+        .auth-btn:hover:not(:disabled) {
+            background: #e06000;
+        }
+        .auth-btn:active:not(:disabled) {
+            transform: scale(0.98);
+        }
+        .auth-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        .auth-error {
+            color: #ef4444;
+            font-size: 13px;
+            margin-bottom: 12px;
+            min-height: 20px;
+            text-align: center;
+        }
+        .auth-success {
+            color: #22c55e;
+            font-size: 13px;
+            margin-bottom: 12px;
+            min-height: 20px;
+            text-align: center;
+        }
+        .auth-spinner {
+            width: 18px;
+            height: 18px;
+            border: 2.5px solid rgba(255,255,255,0.3);
+            border-top-color: #fff;
+            border-radius: 50%;
+            animation: auth-spin 0.6s linear infinite;
+            display: inline-block;
+        }
+        @keyframes auth-spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .signout-btn {
+            background: transparent;
+            border: 1px solid #333;
+            color: #808080;
+            font-size: 12px;
+            font-weight: 600;
+            padding: 6px 14px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.15s;
+            font-family: 'Inter', sans-serif;
+            white-space: nowrap;
+        }
+        .signout-btn:hover {
+            border-color: #555;
+            color: #b0b0b0;
+            background: rgba(255,255,255,0.03);
+        }
+
+        /* ====== APP STYLES ====== */
         .song-row {
             transition: all 0.15s ease;
             cursor: pointer;
@@ -156,10 +318,45 @@
         .search-input:focus { outline: none; border-color: #FF6B00; }
         .search-input::placeholder { color: #606060; }
 
-        .demo-badge {
-            background: rgba(255,107,0,0.15); color: #ff8f33; font-size: 11px;
-            font-weight: 700; padding: 3px 10px; border-radius: 20px; white-space: nowrap;
-            letter-spacing: 0.5px; text-transform: uppercase;
+        /* Error state */
+        .error-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+            text-align: center;
+        }
+        .error-state svg {
+            margin-bottom: 16px;
+        }
+        .error-state p {
+            color: #808080;
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+        .error-state .error-detail {
+            color: #606060;
+            font-size: 12px;
+        }
+        .retry-btn {
+            margin-top: 16px;
+            background: rgba(255,107,0,0.12);
+            color: #ff8f33;
+            border: 1px solid rgba(255,107,0,0.25);
+            border-radius: 8px;
+            padding: 10px 24px;
+            font-family: 'Inter', sans-serif;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.15s;
+            min-height: 44px;
+        }
+        .retry-btn:hover {
+            background: rgba(255,107,0,0.2);
+            border-color: rgba(255,107,0,0.4);
         }
 
         /* Mobile tabs */
@@ -219,6 +416,8 @@
             .col-left.hidden-mobile { display: none !important; }
             .col-right.visible-mobile { display: block !important; }
             .desktop-only { display: none !important; }
+            .login-card { padding: 32px 20px 28px; }
+            .login-title { font-size: 22px; letter-spacing: 3px; }
         }
 
         @media (min-width: 768px) {
@@ -230,83 +429,116 @@
 <body data-id="0">
     <app-icon data-id="1" hidden data-icon="music" data-palette="Earth"></app-icon>
 
-    <header data-id="2" class="px-4 md:px-8 py-4 md:py-5 flex items-center justify-between border-b border-bg-600" id="header-main-h3k9">
-        <div data-id="3" class="flex items-center gap-3" id="header-left-v2m1">
-            <div data-id="4">
-                <div data-id="5" class="flex items-center gap-3">
-                    <h1 data-id="6" class="font-display text-xl md:text-3xl text-accent-500 tracking-wider leading-tight" id="band-name-t8m2">DIRTY DIAPERZ</h1>
-                    <span data-id="7" id="demo-mode-badge" class="demo-badge hidden">Demo Mode</span>
-                </div>
-                <p data-id="8" class="text-txt-300 text-xs md:text-sm font-medium tracking-wide" id="subtitle-s4n7">Setlist Builder</p>
+    <!-- ====== LOGIN SCREEN ====== -->
+    <div data-id="2" id="login-screen">
+        <div data-id="3" class="login-card" id="login-card-x7k2">
+            <div data-id="4" class="login-emoji" id="login-emoji-d3f1">🥁</div>
+            <h1 data-id="5" class="login-title" id="login-title-p8q4">DIRTY DIAPERZ</h1>
+            <p data-id="6" class="login-subtitle" id="login-subtitle-r2w9">SETLIST BUILDER</p>
+
+            <div data-id="7" class="auth-tabs" id="auth-tabs-j5m3">
+                <button data-id="8" class="auth-tab active" id="auth-tab-password" data-auth-tab="password">PASSWORD</button>
+                <button data-id="9" class="auth-tab" id="auth-tab-magic" data-auth-tab="magic">MAGIC LINK</button>
+            </div>
+
+            <!-- Password Form -->
+            <div data-id="10" id="auth-form-password">
+                <input data-id="11" type="email" class="auth-input" id="login-email-pw-a1b2" placeholder="Email address" autocomplete="email" />
+                <input data-id="12" type="password" class="auth-input" id="login-password-c3d4" placeholder="Password" autocomplete="current-password" />
+                <div data-id="13" class="auth-error" id="login-error-pw-e5f6"></div>
+                <button data-id="14" class="auth-btn" id="login-btn-pw-g7h8">SIGN IN</button>
+            </div>
+
+            <!-- Magic Link Form -->
+            <div data-id="15" id="auth-form-magic" style="display: none;">
+                <input data-id="16" type="email" class="auth-input" id="login-email-ml-i9j0" placeholder="Email address" autocomplete="email" />
+                <div data-id="17" class="auth-error" id="login-error-ml-k1l2"></div>
+                <div data-id="18" class="auth-success" id="login-success-ml-m3n4"></div>
+                <button data-id="19" class="auth-btn" id="login-btn-ml-o5p6">SEND MAGIC LINK</button>
             </div>
         </div>
-    </header>
-
-    <div data-id="9" class="mobile-tab-bar" id="mobile-tab-bar">
-        <button data-id="10" class="mobile-tab active" id="tab-songs-btn">🎵 SONGS</button>
-        <button data-id="11" class="mobile-tab" id="tab-setlist-btn">📋 SETLIST <span data-id="12" class="mobile-tab-badge" id="mobile-setlist-badge">0</span></button>
     </div>
 
-    <main data-id="13" class="px-4 md:px-8 py-4 md:py-6 max-w-[1400px] mx-auto">
-        <div data-id="14" class="main-grid flex gap-6" id="main-grid-g7h8">
-
-            <div data-id="15" class="col-left" style="width: 55%; flex-shrink: 0;" id="col-left-i9j0">
-                <div data-id="16" class="relative mb-4" id="search-wrap-k1l2">
-                    <i data-id="17" data-lucide="search" class="w-5 h-5 absolute left-4 top-1/2 -translate-y-1/2 text-txt-500"></i>
-                    <input data-id="18" type="text" id="search-input-m3n4" class="search-input" placeholder="Search by title or artist…" />
-                </div>
-
-                <div data-id="19" id="song-list-container-o5p6" class="rounded-xl border border-bg-600 overflow-hidden scrollable-panel" style="max-height: 60vh; overflow-y: auto;">
-                </div>
-
-                <div data-id="20" class="mt-4 flex items-center justify-between px-2" id="selection-summary-q7r8">
-                    <span data-id="21" class="text-sm text-txt-300">
-                        <span data-id="22" id="selected-count-s9t0" class="font-semibold text-accent-500">0</span> songs selected
-                    </span>
-                    <span data-id="23" class="text-sm text-txt-400">
-                        Total: <span data-id="24" id="selected-total-time-u1v2" class="font-semibold text-txt-200 tabular-nums">0:00</span>
-                    </span>
+    <!-- ====== APP (hidden until authenticated) ====== -->
+    <div data-id="20" id="app-wrapper" style="display: none;">
+        <header data-id="21" class="px-4 md:px-8 py-4 md:py-5 flex items-center justify-between border-b border-bg-600" id="header-main-h3k9">
+            <div data-id="22" class="flex items-center gap-3" id="header-left-v2m1">
+                <div data-id="23">
+                    <div data-id="24" class="flex items-center gap-3">
+                        <h1 data-id="25" class="font-display text-xl md:text-3xl text-accent-500 tracking-wider leading-tight" id="band-name-t8m2">DIRTY DIAPERZ</h1>
+                    </div>
+                    <p data-id="26" class="text-txt-300 text-xs md:text-sm font-medium tracking-wide" id="subtitle-s4n7">Setlist Builder</p>
                 </div>
             </div>
+            <button data-id="27" class="signout-btn" id="signout-btn-q8r9">Sign out</button>
+        </header>
 
-            <div data-id="25" class="col-right" style="width: 45%;" id="col-right-w3x4">
-                <div data-id="26" class="flex items-center justify-between mb-4" id="setlist-header-r4s5">
-                    <div data-id="27">
-                        <h2 data-id="28" class="font-display text-lg text-accent-500 tracking-wider" id="setlist-title-y5z6">YOUR SETLIST</h2>
-                        <p data-id="29" class="text-xs text-txt-500 mt-1 flex items-center gap-1 desktop-only" id="drag-hint-t6u7">
-                            <i data-id="30" data-lucide="grip-vertical" class="w-3 h-3"></i>
-                            drag to reorder
-                        </p>
-                        <p data-id="31" class="text-xs text-txt-500 mt-1 flex items-center gap-1 md:hidden" id="drag-hint-touch">
-                            hold &amp; drag to reorder
-                        </p>
-                    </div>
-                    <div data-id="32" id="setlist-runtime-a7b8" class="text-right">
-                        <span data-id="33" class="text-xs text-txt-500 uppercase tracking-wide">Runtime</span>
-                        <p data-id="34" class="text-lg font-bold text-txt-100 tabular-nums" id="total-runtime-c9d0">0:00</p>
-                    </div>
-                </div>
-
-                <div data-id="35" id="setlist-cards-container-e1f2" class="scrollable-panel" style="max-height: 58vh; overflow-y: auto; padding-right: 4px;">
-                    <div data-id="36" id="empty-state-g3h4" class="text-center py-16 px-5">
-                        <i data-id="37" data-lucide="arrow-left" class="w-10 h-10 text-txt-500 mx-auto mb-4"></i>
-                        <p data-id="38" class="text-txt-400 text-sm font-medium">Pick songs from the list to build your setlist</p>
-                    </div>
-                </div>
-
-                <div data-id="39" class="mt-5" id="generate-wrap-i5j6" style="padding-bottom: env(safe-area-inset-bottom, 0px);">
-                    <button data-id="40" id="generate-btn-k7l8" class="btn-generate" disabled>
-                        <i data-id="41" data-lucide="printer" class="w-5 h-5"></i>
-                        GENERATE SETLIST
-                    </button>
-                </div>
-            </div>
+        <div data-id="28" class="mobile-tab-bar" id="mobile-tab-bar">
+            <button data-id="29" class="mobile-tab active" id="tab-songs-btn">🎵 SONGS</button>
+            <button data-id="30" class="mobile-tab" id="tab-setlist-btn">📋 SETLIST <span data-id="31" class="mobile-tab-badge" id="mobile-setlist-badge">0</span></button>
         </div>
-    </main>
 
-    <footer data-id="42" class="py-6 text-center border-t border-bg-600 mt-8" id="footer-m9n0" style="padding-bottom: calc(16px + env(safe-area-inset-bottom, 0px));">
-        <p data-id="43" class="text-xs text-txt-500">Made by Copilot</p>
-    </footer>
+        <main data-id="32" class="px-4 md:px-8 py-4 md:py-6 max-w-[1400px] mx-auto">
+            <div data-id="33" class="main-grid flex gap-6" id="main-grid-g7h8">
+
+                <div data-id="34" class="col-left" style="width: 55%; flex-shrink: 0;" id="col-left-i9j0">
+                    <div data-id="35" class="relative mb-4" id="search-wrap-k1l2">
+                        <i data-id="36" data-lucide="search" class="w-5 h-5 absolute left-4 top-1/2 -translate-y-1/2 text-txt-500"></i>
+                        <input data-id="37" type="text" id="search-input-m3n4" class="search-input" placeholder="Search by title or artist…" />
+                    </div>
+
+                    <div data-id="38" id="song-list-container-o5p6" class="rounded-xl border border-bg-600 overflow-hidden scrollable-panel" style="max-height: 60vh; overflow-y: auto;">
+                    </div>
+
+                    <div data-id="39" class="mt-4 flex items-center justify-between px-2" id="selection-summary-q7r8">
+                        <span data-id="40" class="text-sm text-txt-300">
+                            <span data-id="41" id="selected-count-s9t0" class="font-semibold text-accent-500">0</span> songs selected
+                        </span>
+                        <span data-id="42" class="text-sm text-txt-400">
+                            Total: <span data-id="43" id="selected-total-time-u1v2" class="font-semibold text-txt-200 tabular-nums">0:00</span>
+                        </span>
+                    </div>
+                </div>
+
+                <div data-id="44" class="col-right" style="width: 45%;" id="col-right-w3x4">
+                    <div data-id="45" class="flex items-center justify-between mb-4" id="setlist-header-r4s5">
+                        <div data-id="46">
+                            <h2 data-id="47" class="font-display text-lg text-accent-500 tracking-wider" id="setlist-title-y5z6">YOUR SETLIST</h2>
+                            <p data-id="48" class="text-xs text-txt-500 mt-1 flex items-center gap-1 desktop-only" id="drag-hint-t6u7">
+                                <i data-id="49" data-lucide="grip-vertical" class="w-3 h-3"></i>
+                                drag to reorder
+                            </p>
+                            <p data-id="50" class="text-xs text-txt-500 mt-1 flex items-center gap-1 md:hidden" id="drag-hint-touch">
+                                hold &amp; drag to reorder
+                            </p>
+                        </div>
+                        <div data-id="51" id="setlist-runtime-a7b8" class="text-right">
+                            <span data-id="52" class="text-xs text-txt-500 uppercase tracking-wide">Runtime</span>
+                            <p data-id="53" class="text-lg font-bold text-txt-100 tabular-nums" id="total-runtime-c9d0">0:00</p>
+                        </div>
+                    </div>
+
+                    <div data-id="54" id="setlist-cards-container-e1f2" class="scrollable-panel" style="max-height: 58vh; overflow-y: auto; padding-right: 4px;">
+                        <div data-id="55" id="empty-state-g3h4" class="text-center py-16 px-5">
+                            <i data-id="56" data-lucide="arrow-left" class="w-10 h-10 text-txt-500 mx-auto mb-4"></i>
+                            <p data-id="57" class="text-txt-400 text-sm font-medium">Pick songs from the list to build your setlist</p>
+                        </div>
+                    </div>
+
+                    <div data-id="58" class="mt-5" id="generate-wrap-i5j6" style="padding-bottom: env(safe-area-inset-bottom, 0px);">
+                        <button data-id="59" id="generate-btn-k7l8" class="btn-generate" disabled>
+                            <i data-id="60" data-lucide="printer" class="w-5 h-5"></i>
+                            GENERATE SETLIST
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <footer data-id="61" class="py-6 text-center border-t border-bg-600 mt-8" id="footer-m9n0" style="padding-bottom: calc(16px + env(safe-area-inset-bottom, 0px));">
+            <p data-id="62" class="text-xs text-txt-500">Made by Copilot</p>
+        </footer>
+    </div>
 
     <script>
     (function() {
@@ -326,25 +558,190 @@
             supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
         }
 
-        // ====== DEMO DATA ======
-        var DEMO_SONGS = [
-            { id:1,  title:"Kickstart My Heart",        artist:"M\u00F6tley Cr\u00FCe",   key_sig:"E major", time_sig:"4/4", duration_seconds:270, bpm:170, bpm_drums:168, notes:"Big intro build \u2014 wait for guitar signal" },
-            { id:2,  title:"Welcome to the Jungle",     artist:"Guns N' Roses",  key_sig:"E minor", time_sig:"4/4", duration_seconds:271, bpm:122, bpm_drums:120, notes:"Feedback intro \u2014 hold until crowd reacts" },
-            { id:3,  title:"Enter Sandman",              artist:"Metallica",      key_sig:"E minor", time_sig:"4/4", duration_seconds:331, bpm:123, bpm_drums:122, notes:"Quiet intro \u2014 no click until bar 5" },
-            { id:4,  title:"Photograph",                 artist:"Def Leppard",    key_sig:"E major", time_sig:"4/4", duration_seconds:264, bpm:122, bpm_drums:120, notes:"Drum fill on bar 8 is the cue" },
-            { id:5,  title:"Pour Some Sugar on Me",      artist:"Def Leppard",    key_sig:"B major", time_sig:"4/4", duration_seconds:270, bpm:128, bpm_drums:126, notes:"" },
-            { id:6,  title:"Livin' on a Prayer",         artist:"Bon Jovi",       key_sig:"C minor", time_sig:"4/4", duration_seconds:252, bpm:123, bpm_drums:122, notes:"Key change last chorus \u2014 heads up!" },
-            { id:7,  title:"Panama",                     artist:"Van Halen",      key_sig:"E major", time_sig:"4/4", duration_seconds:214, bpm:143, bpm_drums:142, notes:"" },
-            { id:8,  title:"Rock You Like a Hurricane",  artist:"Scorpions",      key_sig:"E minor", time_sig:"4/4", duration_seconds:252, bpm:125, bpm_drums:124, notes:"Verse riff comes in bar 3" },
-            { id:9,  title:"Cherry Pie",                 artist:"Warrant",        key_sig:"D major", time_sig:"4/4", duration_seconds:199, bpm:153, bpm_drums:152, notes:"Great closer \u2014 big ending" },
-            { id:10, title:"Dr. Feelgood",               artist:"M\u00F6tley Cr\u00FCe",    key_sig:"E major", time_sig:"4/4", duration_seconds:270, bpm:116, bpm_drums:115, notes:"Groove pocket \u2014 don't rush" },
-            { id:11, title:"Talk Dirty to Me",           artist:"Poison",         key_sig:"A major", time_sig:"4/4", duration_seconds:233, bpm:140, bpm_drums:138, notes:"" },
-            { id:12, title:"Nothin' But a Good Time",    artist:"Poison",         key_sig:"A major", time_sig:"4/4", duration_seconds:248, bpm:158, bpm_drums:156, notes:"Energy song \u2014 push the tempo" },
-            { id:13, title:"18 and Life",                artist:"Skid Row",       key_sig:"E minor", time_sig:"4/4", duration_seconds:252, bpm:126, bpm_drums:125, notes:"" },
-            { id:14, title:"I Remember You",             artist:"Skid Row",       key_sig:"E major", time_sig:"4/4", duration_seconds:280, bpm:76,  bpm_drums:74,  notes:"Ballad \u2014 sound check reverb first" },
-            { id:15, title:"Here I Go Again",            artist:"Whitesnake",     key_sig:"C major", time_sig:"4/4", duration_seconds:241, bpm:136, bpm_drums:134, notes:"" },
-            { id:16, title:"Barracuda",                  artist:"Heart",          key_sig:"E minor", time_sig:"4/4", duration_seconds:261, bpm:137, bpm_drums:136, notes:"Iconic riff intro \u2014 let it breathe" }
-        ];
+        // ====== AUTH ELEMENTS ======
+        var loginScreen = document.getElementById("login-screen");
+        var appWrapper = document.getElementById("app-wrapper");
+        var authTabPassword = document.getElementById("auth-tab-password");
+        var authTabMagic = document.getElementById("auth-tab-magic");
+        var authFormPassword = document.getElementById("auth-form-password");
+        var authFormMagic = document.getElementById("auth-form-magic");
+        var loginEmailPw = document.getElementById("login-email-pw-a1b2");
+        var loginPassword = document.getElementById("login-password-c3d4");
+        var loginErrorPw = document.getElementById("login-error-pw-e5f6");
+        var loginBtnPw = document.getElementById("login-btn-pw-g7h8");
+        var loginEmailMl = document.getElementById("login-email-ml-i9j0");
+        var loginErrorMl = document.getElementById("login-error-ml-k1l2");
+        var loginSuccessMl = document.getElementById("login-success-ml-m3n4");
+        var loginBtnMl = document.getElementById("login-btn-ml-o5p6");
+        var signoutBtn = document.getElementById("signout-btn-q8r9");
+
+        // ====== AUTH TAB SWITCHING ======
+        authTabPassword.addEventListener("click", function() {
+            authTabPassword.classList.add("active");
+            authTabMagic.classList.remove("active");
+            authFormPassword.style.display = "block";
+            authFormMagic.style.display = "none";
+            loginErrorPw.textContent = "";
+        });
+
+        authTabMagic.addEventListener("click", function() {
+            authTabMagic.classList.add("active");
+            authTabPassword.classList.remove("active");
+            authFormMagic.style.display = "block";
+            authFormPassword.style.display = "none";
+            loginErrorMl.textContent = "";
+            loginSuccessMl.textContent = "";
+        });
+
+        // ====== AUTH: PASSWORD SIGN IN ======
+        loginBtnPw.addEventListener("click", async function() {
+            var email = loginEmailPw.value.trim();
+            var password = loginPassword.value;
+            loginErrorPw.textContent = "";
+
+            if (!email) {
+                loginErrorPw.textContent = "Please enter your email address.";
+                return;
+            }
+            if (!password) {
+                loginErrorPw.textContent = "Please enter your password.";
+                return;
+            }
+
+            loginBtnPw.disabled = true;
+            loginBtnPw.innerHTML = '<span class="auth-spinner"></span>';
+
+            try {
+                var result = await supabaseClient.auth.signInWithPassword({ email: email, password: password });
+                if (result.error) {
+                    loginErrorPw.textContent = result.error.message || "Sign in failed. Please try again.";
+                    loginBtnPw.disabled = false;
+                    loginBtnPw.textContent = "SIGN IN";
+                }
+                // Success handled by onAuthStateChange
+            } catch (err) {
+                loginErrorPw.textContent = "An unexpected error occurred. Please try again.";
+                loginBtnPw.disabled = false;
+                loginBtnPw.textContent = "SIGN IN";
+            }
+        });
+
+        // Allow Enter key on password field
+        loginPassword.addEventListener("keydown", function(e) {
+            if (e.key === "Enter") {
+                loginBtnPw.click();
+            }
+        });
+        loginEmailPw.addEventListener("keydown", function(e) {
+            if (e.key === "Enter") {
+                loginPassword.focus();
+            }
+        });
+
+        // ====== AUTH: MAGIC LINK ======
+        loginBtnMl.addEventListener("click", async function() {
+            var email = loginEmailMl.value.trim();
+            loginErrorMl.textContent = "";
+            loginSuccessMl.textContent = "";
+
+            if (!email) {
+                loginErrorMl.textContent = "Please enter your email address.";
+                return;
+            }
+
+            loginBtnMl.disabled = true;
+            loginBtnMl.innerHTML = '<span class="auth-spinner"></span>';
+
+            try {
+                var result = await supabaseClient.auth.signInWithOtp({
+                    email: email,
+                    options: { emailRedirectTo: window.location.origin }
+                });
+                if (result.error) {
+                    loginErrorMl.textContent = result.error.message || "Failed to send magic link.";
+                } else {
+                    loginSuccessMl.textContent = "Magic link sent! Check your email inbox.";
+                }
+            } catch (err) {
+                loginErrorMl.textContent = "An unexpected error occurred. Please try again.";
+            }
+            loginBtnMl.disabled = false;
+            loginBtnMl.textContent = "SEND MAGIC LINK";
+        });
+
+        loginEmailMl.addEventListener("keydown", function(e) {
+            if (e.key === "Enter") {
+                loginBtnMl.click();
+            }
+        });
+
+        // ====== AUTH: SIGN OUT ======
+        signoutBtn.addEventListener("click", async function() {
+            try {
+                await supabaseClient.auth.signOut();
+            } catch (err) {
+                // Force UI to login on error too
+            }
+            showLogin();
+        });
+
+        // ====== AUTH: SHOW/HIDE ======
+        function showLogin() {
+            loginScreen.style.display = "flex";
+            appWrapper.style.display = "none";
+            // Reset forms
+            loginEmailPw.value = "";
+            loginPassword.value = "";
+            loginErrorPw.textContent = "";
+            loginEmailMl.value = "";
+            loginErrorMl.textContent = "";
+            loginSuccessMl.textContent = "";
+            loginBtnPw.disabled = false;
+            loginBtnPw.textContent = "SIGN IN";
+            loginBtnMl.disabled = false;
+            loginBtnMl.textContent = "SEND MAGIC LINK";
+        }
+
+        function showApp() {
+            loginScreen.style.display = "none";
+            appWrapper.style.display = "block";
+            // Initialize the app content if not already done
+            if (!appInitialized) {
+                appInitialized = true;
+                initApp();
+            }
+        }
+
+        var appInitialized = false;
+
+        // ====== AUTH: SESSION CHECK ON LOAD ======
+        async function checkSession() {
+            if (!supabaseClient) {
+                showLogin();
+                return;
+            }
+            try {
+                var result = await supabaseClient.auth.getSession();
+                if (result.data && result.data.session) {
+                    showApp();
+                } else {
+                    showLogin();
+                }
+            } catch (err) {
+                showLogin();
+            }
+        }
+
+        // ====== AUTH: STATE CHANGE LISTENER ======
+        if (supabaseClient) {
+            supabaseClient.auth.onAuthStateChange(function(event, session) {
+                if (event === "SIGNED_IN" && session) {
+                    showApp();
+                } else if (event === "SIGNED_OUT") {
+                    showLogin();
+                }
+            });
+        }
 
         // ====== STATE ======
         var allSongs = [];
@@ -352,7 +749,6 @@
         var setlistOrder = [];
         var songNotes = {};
         var draggedId = null;
-        var isUsingDemoData = false;
         var currentMobileTab = "songs";
 
         // ====== HELPERS ======
@@ -452,27 +848,37 @@
             updateSummary();
         }
 
-        function showDemoBadge(show) {
-            var badge = document.getElementById("demo-mode-badge");
-            if (badge) {
-                if (show) {
-                    badge.classList.remove("hidden");
-                } else {
-                    badge.classList.add("hidden");
-                }
-            }
-        }
+        // ====== SHOW ERROR STATE ======
+        function showSongListError(message, detail) {
+            var container = document.getElementById("song-list-container-o5p6");
+            container.innerHTML = "";
 
-        function useDemoFallback() {
-            isUsingDemoData = true;
-            showDemoBadge(true);
-            initializeSongs(DEMO_SONGS.slice());
+            var errorDiv = document.createElement("div");
+            errorDiv.className = "error-state";
+
+            errorDiv.innerHTML = '<svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>' +
+                '<p>' + escapeHtml(message) + '</p>' +
+                (detail ? '<p class="error-detail">' + escapeHtml(detail) + '</p>' : '') +
+                '<button class="retry-btn" id="retry-fetch-btn">Retry</button>';
+
+            container.appendChild(errorDiv);
+
+            var retryBtn = document.getElementById("retry-fetch-btn");
+            if (retryBtn) {
+                retryBtn.addEventListener("click", function() {
+                    container.innerHTML = '<div class="p-8 text-center text-txt-500 text-sm">Loading songs\u2026</div>';
+                    fetchSongsFromSupabase();
+                });
+            }
         }
 
         // ====== SUPABASE FETCH ======
         async function fetchSongsFromSupabase() {
             if (!supabaseClient) {
-                useDemoFallback();
+                showSongListError(
+                    "Unable to connect to the database",
+                    "Supabase client could not be initialized. Please refresh the page."
+                );
                 return;
             }
 
@@ -485,8 +891,19 @@
                 var data = result.data;
                 var error = result.error;
 
-                if (error || !data || data.length === 0) {
-                    useDemoFallback();
+                if (error) {
+                    showSongListError(
+                        "Failed to load songs",
+                        error.message || "A database error occurred. Please try again."
+                    );
+                    return;
+                }
+
+                if (!data || data.length === 0) {
+                    showSongListError(
+                        "No songs found",
+                        "The song library is empty. Add songs to your Supabase database to get started."
+                    );
                     return;
                 }
 
@@ -505,12 +922,13 @@
                     };
                 });
 
-                isUsingDemoData = false;
-                showDemoBadge(false);
                 initializeSongs(mappedSongs);
 
             } catch (e) {
-                useDemoFallback();
+                showSongListError(
+                    "Connection error",
+                    "Could not reach the database. Check your internet connection and try again."
+                );
             }
         }
 
@@ -529,7 +947,6 @@
                 }
             }
 
-            // Sort filtered results alphabetically by title (case-insensitive A-Z)
             filtered = sortByTitleAlpha(filtered);
 
             if (filtered.length === 0) {
@@ -613,7 +1030,6 @@
             updateSummary();
             updateMobileSetlistBadge();
 
-            // On mobile, switch to setlist tab after adding a song
             if (wasAdding && isMobile()) {
                 setTimeout(function() {
                     switchMobileTab("setlist");
@@ -629,10 +1045,8 @@
             var cardHeight = 0;
 
             card.addEventListener('touchstart', function(e) {
-                // Don't drag if touching textarea or buttons
                 var target = e.target;
                 if (target.tagName === 'TEXTAREA' || target.tagName === 'BUTTON' || target.tagName === 'INPUT') return;
-                // Check parent too
                 var parent = target.parentElement;
                 if (parent && (parent.tagName === 'BUTTON' || parent.classList.contains('remove-btn'))) return;
 
@@ -640,7 +1054,7 @@
                 var cards = container.querySelectorAll(".setlist-card");
                 startIndex = Array.from(cards).indexOf(card);
                 startY = e.touches[0].clientY;
-                cardHeight = card.offsetHeight + 12; // include margin
+                cardHeight = card.offsetHeight + 12;
                 isDragging = true;
                 card.classList.add("touch-dragging");
             }, { passive: true });
@@ -714,7 +1128,6 @@
                 card.setAttribute("draggable", "true");
                 card.setAttribute("data-setlist-id", id);
 
-                // Remove button
                 var removeBtn = document.createElement("button");
                 removeBtn.className = "remove-btn";
                 removeBtn.setAttribute("aria-label", "Remove song");
@@ -728,11 +1141,9 @@
                     });
                 })(id);
 
-                // Content wrapper
                 var flexWrap = document.createElement("div");
                 flexWrap.className = "flex items-start gap-3";
 
-                // Left: drag handle + number
                 var leftCol = document.createElement("div");
                 leftCol.className = "flex flex-col items-center gap-1 pt-1";
                 leftCol.style.cursor = "grab";
@@ -748,7 +1159,6 @@
                 leftCol.appendChild(dragHandle);
                 leftCol.appendChild(numBadge);
 
-                // Right: song info
                 var rightCol = document.createElement("div");
                 rightCol.className = "flex-1 min-w-0 pr-8";
 
@@ -796,7 +1206,6 @@
                 card.appendChild(removeBtn);
                 card.appendChild(flexWrap);
 
-                // Desktop drag events
                 (function(cardEl, cardIdLocal) {
                     cardEl.addEventListener("dragstart", function(e) {
                         draggedId = cardIdLocal;
@@ -853,7 +1262,6 @@
                     });
                 })(card, id);
 
-                // Touch drag events for mobile
                 addTouchDrag(card, id);
 
                 container.appendChild(card);
@@ -934,20 +1342,23 @@
             generatePrintView();
         });
 
-        // ====== INIT ======
-        setupMobileTabs();
+        // ====== INIT APP (called after auth) ======
+        function initApp() {
+            setupMobileTabs();
 
-        // Show loading state then fetch from Supabase
-        var songListContainer = document.getElementById("song-list-container-o5p6");
-        songListContainer.innerHTML = '<div class="p-8 text-center text-txt-500 text-sm">Loading songs\u2026</div>';
+            var songListContainer = document.getElementById("song-list-container-o5p6");
+            songListContainer.innerHTML = '<div class="p-8 text-center text-txt-500 text-sm">Loading songs\u2026</div>';
 
-        // Fetch songs on DOMContentLoaded (or immediately if already loaded)
+            fetchSongsFromSupabase();
+        }
+
+        // ====== START: Check session ======
         if (document.readyState === "loading") {
             document.addEventListener("DOMContentLoaded", function() {
-                fetchSongsFromSupabase();
+                checkSession();
             });
         } else {
-            fetchSongsFromSupabase();
+            checkSession();
         }
     })();
     </script>
