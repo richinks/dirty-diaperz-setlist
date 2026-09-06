@@ -1,0 +1,1379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="color-scheme" content="dark" />
+    <title>Dirty Diaperz Setlist Builder</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        bg: {
+                            900: '#0f0f0f',
+                            800: '#161616',
+                            700: '#1c1c1c',
+                            600: '#232323',
+                            500: '#2a2a2a',
+                            400: '#333333',
+                        },
+                        accent: {
+                            50: '#fff3e6',
+                            100: '#ffe0bf',
+                            200: '#ffcc99',
+                            300: '#ffb366',
+                            400: '#ff8f33',
+                            500: '#FF6B00',
+                            600: '#e06000',
+                            700: '#b34d00',
+                            800: '#803700',
+                            900: '#4d2100',
+                        },
+                        txt: {
+                            100: '#ffffff',
+                            200: '#e0e0e0',
+                            300: '#b0b0b0',
+                            400: '#808080',
+                            500: '#606060',
+                        },
+                    },
+                    fontFamily: {
+                        display: ['"Russo One"', 'sans-serif'],
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                },
+            },
+        };
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Russo+One&display=swap" rel="stylesheet" />
+    <style>
+        :root {
+            --accent: #FF6B00;
+            --bg-base: #0f0f0f;
+        }
+        * { box-sizing: border-box; }
+        body {
+            background: var(--bg-base);
+            color: #e0e0e0;
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            min-height: 100vh;
+            padding-bottom: env(safe-area-inset-bottom, 0px);
+            overflow-x: hidden;
+        }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #161616; }
+        ::-webkit-scrollbar-thumb { background: #444; border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: #666; }
+
+        /* ====== LOGIN SCREEN ====== */
+        #login-screen {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #0f0f0f;
+            padding: 16px;
+        }
+        .login-card {
+            background: #161616;
+            border-radius: 16px;
+            padding: 40px 32px 36px;
+            max-width: 420px;
+            width: 100%;
+            border: 1px solid #232323;
+        }
+        .login-emoji {
+            font-size: 64px;
+            text-align: center;
+            line-height: 1;
+            margin-bottom: 16px;
+        }
+        .login-title {
+            font-family: 'Russo One', sans-serif;
+            color: #FF6B00;
+            font-size: 28px;
+            letter-spacing: 4px;
+            text-align: center;
+            margin-bottom: 4px;
+        }
+        .login-subtitle {
+            text-align: center;
+            color: #808080;
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            margin-bottom: 28px;
+        }
+        .auth-tabs {
+            display: flex;
+            border-bottom: 1px solid #2a2a2a;
+            margin-bottom: 24px;
+        }
+        .auth-tab {
+            flex: 1;
+            background: transparent;
+            border: none;
+            color: #808080;
+            font-family: 'Inter', sans-serif;
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            padding: 12px 8px;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: all 0.15s;
+        }
+        .auth-tab.active {
+            color: #FF6B00;
+            border-bottom-color: #FF6B00;
+        }
+        .auth-tab:hover:not(.active) {
+            color: #b0b0b0;
+        }
+        .auth-input {
+            width: 100%;
+            background: #1c1c1c;
+            border: 1px solid #2a2a2a;
+            border-radius: 10px;
+            padding: 14px 16px;
+            color: #e0e0e0;
+            font-size: 16px;
+            font-family: 'Inter', sans-serif;
+            margin-bottom: 14px;
+            transition: border-color 0.15s;
+        }
+        .auth-input:focus {
+            outline: none;
+            border-color: #FF6B00;
+        }
+        .auth-input::placeholder {
+            color: #606060;
+        }
+        .auth-btn {
+            width: 100%;
+            background: #FF6B00;
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            padding: 16px;
+            font-family: 'Russo One', sans-serif;
+            font-size: 15px;
+            letter-spacing: 1.5px;
+            cursor: pointer;
+            transition: background 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            min-height: 52px;
+            margin-top: 4px;
+        }
+        .auth-btn:hover:not(:disabled) {
+            background: #e06000;
+        }
+        .auth-btn:active:not(:disabled) {
+            transform: scale(0.98);
+        }
+        .auth-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        .auth-error {
+            color: #ef4444;
+            font-size: 13px;
+            margin-bottom: 12px;
+            min-height: 20px;
+            text-align: center;
+        }
+        .auth-success {
+            color: #22c55e;
+            font-size: 13px;
+            margin-bottom: 12px;
+            min-height: 20px;
+            text-align: center;
+        }
+        .auth-spinner {
+            width: 18px;
+            height: 18px;
+            border: 2.5px solid rgba(255,255,255,0.3);
+            border-top-color: #fff;
+            border-radius: 50%;
+            animation: auth-spin 0.6s linear infinite;
+            display: inline-block;
+        }
+        @keyframes auth-spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .signout-btn {
+            background: transparent;
+            border: 1px solid #333;
+            color: #808080;
+            font-size: 12px;
+            font-weight: 600;
+            padding: 6px 14px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.15s;
+            font-family: 'Inter', sans-serif;
+            white-space: nowrap;
+        }
+        .signout-btn:hover {
+            border-color: #555;
+            color: #b0b0b0;
+            background: rgba(255,255,255,0.03);
+        }
+
+        /* ====== APP STYLES ====== */
+        .song-row {
+            transition: all 0.15s ease;
+            cursor: pointer;
+            min-height: 56px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+        }
+        .song-row:hover { background: #1e1e1e; }
+        .song-row.selected { border-left: 3px solid #FF6B00; background: rgba(255,107,0,0.06); }
+        .song-row.selected .check-box { background: #FF6B00; border-color: #FF6B00; }
+
+        .check-box {
+            width: 22px; height: 22px; border: 2px solid #555;
+            border-radius: 4px; display: flex; align-items: center;
+            justify-content: center; flex-shrink: 0; transition: all 0.15s ease;
+            min-width: 22px; min-height: 22px;
+        }
+
+        .setlist-card {
+            background: #1c1c1c; border-radius: 12px; padding: 16px;
+            border: 1px solid #2a2a2a; transition: all 0.2s ease;
+            position: relative; margin-bottom: 12px;
+            user-select: none; -webkit-user-select: none;
+            touch-action: pan-y;
+        }
+        .setlist-card:hover { border-color: #444; }
+        .setlist-card.dragging { opacity: 0.5; border-color: #FF6B00; }
+        .setlist-card.touch-dragging {
+            opacity: 0.85;
+            border-color: #FF6B00;
+            box-shadow: 0 8px 32px rgba(255,107,0,0.2);
+            z-index: 100;
+        }
+
+        .notes-textarea {
+            background: #161616; border: 1px solid #2a2a2a; border-radius: 8px;
+            color: #b0b0b0; font-size: 16px; padding: 8px 10px; width: 100%;
+            resize: none; font-family: 'Inter', sans-serif; transition: border-color 0.15s;
+        }
+        .notes-textarea:focus { outline: none; border-color: #FF6B00; }
+
+        .btn-generate {
+            background: #FF6B00; color: #fff; border: none; border-radius: 12px;
+            padding: 16px; font-family: 'Russo One', sans-serif; font-size: 16px;
+            letter-spacing: 1px; cursor: pointer; width: 100%; transition: background 0.2s;
+            display: flex; align-items: center; justify-content: center; gap: 8px;
+            min-height: 52px;
+        }
+        .btn-generate:hover:not(:disabled) { background: #e06000; }
+        .btn-generate:active:not(:disabled) { transform: scale(0.98); }
+        .btn-generate:disabled { opacity: 0.4; cursor: not-allowed; }
+
+        .badge-bpm {
+            background: rgba(255,107,0,0.12); color: #ff8f33; font-size: 11px;
+            font-weight: 600; padding: 2px 8px; border-radius: 20px; white-space: nowrap;
+        }
+
+        .number-badge {
+            width: 28px; height: 28px; background: #FF6B00; color: #fff;
+            border-radius: 50%; display: flex; align-items: center;
+            justify-content: center; font-weight: 700; font-size: 13px; flex-shrink: 0;
+        }
+
+        .remove-btn {
+            width: 44px; height: 44px; background: transparent; border: none;
+            color: #606060; cursor: pointer; display: flex; align-items: center;
+            justify-content: center; border-radius: 4px; transition: all 0.15s;
+            position: absolute; top: 4px; right: 4px;
+            min-width: 44px; min-height: 44px;
+        }
+        .remove-btn:hover { color: #ff4444; background: rgba(255,68,68,0.1); }
+
+        .search-input {
+            background: #1c1c1c; border: 1px solid #2a2a2a; border-radius: 10px;
+            padding: 12px 16px 12px 44px; color: #e0e0e0; font-size: 16px;
+            width: 100%; font-family: 'Inter', sans-serif; transition: border-color 0.15s;
+        }
+        .search-input:focus { outline: none; border-color: #FF6B00; }
+        .search-input::placeholder { color: #606060; }
+
+        /* Error state */
+        .error-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+            text-align: center;
+        }
+        .error-state svg {
+            margin-bottom: 16px;
+        }
+        .error-state p {
+            color: #808080;
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+        .error-state .error-detail {
+            color: #606060;
+            font-size: 12px;
+        }
+        .retry-btn {
+            margin-top: 16px;
+            background: rgba(255,107,0,0.12);
+            color: #ff8f33;
+            border: 1px solid rgba(255,107,0,0.25);
+            border-radius: 8px;
+            padding: 10px 24px;
+            font-family: 'Inter', sans-serif;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.15s;
+            min-height: 44px;
+        }
+        .retry-btn:hover {
+            background: rgba(255,107,0,0.2);
+            border-color: rgba(255,107,0,0.4);
+        }
+
+        /* Mobile tabs */
+        .mobile-tab-bar {
+            display: none;
+            border-bottom: 1px solid #232323;
+            background: #0f0f0f;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+        .mobile-tab {
+            flex: 1;
+            padding: 14px 8px;
+            font-size: 14px;
+            font-weight: 700;
+            text-align: center;
+            cursor: pointer;
+            border: none;
+            background: transparent;
+            color: #808080;
+            border-bottom: 3px solid transparent;
+            transition: all 0.15s;
+            min-height: 48px;
+            font-family: 'Inter', sans-serif;
+            letter-spacing: 0.3px;
+        }
+        .mobile-tab.active {
+            color: #FF6B00;
+            border-bottom-color: #FF6B00;
+        }
+        .mobile-tab-badge {
+            background: #FF6B00;
+            color: #fff;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 1px 7px;
+            border-radius: 10px;
+            margin-left: 4px;
+            display: inline-block;
+            min-width: 18px;
+            text-align: center;
+        }
+
+        /* Scrollable panels on mobile */
+        .scrollable-panel {
+            -webkit-overflow-scrolling: touch;
+            overflow-y: auto;
+        }
+
+        @media (max-width: 767px) {
+            .mobile-tab-bar { display: flex; }
+            .main-grid { flex-direction: column !important; }
+            .col-left, .col-right { width: 100% !important; }
+            .col-right { display: none; }
+            .col-left { display: block; }
+            .col-left.hidden-mobile { display: none !important; }
+            .col-right.visible-mobile { display: block !important; }
+            .desktop-only { display: none !important; }
+            .login-card { padding: 32px 20px 28px; }
+            .login-title { font-size: 22px; letter-spacing: 3px; }
+        }
+
+        @media (min-width: 768px) {
+            .mobile-tab-bar { display: none !important; }
+            .col-left, .col-right { display: block !important; }
+        }
+    </style>
+</head>
+<body data-id="0">
+    <app-icon data-id="1" hidden data-icon="music" data-palette="Earth"></app-icon>
+
+    <!-- ====== LOGIN SCREEN (visible by default) ====== -->
+    <div data-id="2" id="login-screen" style="display: flex;">
+        <div data-id="3" class="login-card" id="login-card-x7k2">
+            <div data-id="4" class="login-emoji" id="login-emoji-d3f1">🥁</div>
+            <h1 data-id="5" class="login-title" id="login-title-p8q4">DIRTY DIAPERZ</h1>
+            <p data-id="6" class="login-subtitle" id="login-subtitle-r2w9">SETLIST BUILDER</p>
+
+            <div data-id="7" class="auth-tabs" id="auth-tabs-j5m3">
+                <button data-id="8" class="auth-tab active" id="auth-tab-password" data-auth-tab="password">PASSWORD</button>
+                <button data-id="9" class="auth-tab" id="auth-tab-magic" data-auth-tab="magic">MAGIC LINK</button>
+            </div>
+
+            <!-- Password Form -->
+            <div data-id="10" id="auth-form-password">
+                <input data-id="11" type="email" class="auth-input" id="login-email-pw-a1b2" placeholder="Email address" autocomplete="email" />
+                <input data-id="12" type="password" class="auth-input" id="login-password-c3d4" placeholder="Password" autocomplete="current-password" />
+                <div data-id="13" class="auth-error" id="login-error-pw-e5f6"></div>
+                <button data-id="14" class="auth-btn" id="login-btn-pw-g7h8">SIGN IN</button>
+            </div>
+
+            <!-- Magic Link Form -->
+            <div data-id="15" id="auth-form-magic" style="display: none;">
+                <input data-id="16" type="email" class="auth-input" id="login-email-ml-i9j0" placeholder="Email address" autocomplete="email" />
+                <div data-id="17" class="auth-error" id="login-error-ml-k1l2"></div>
+                <div data-id="18" class="auth-success" id="login-success-ml-m3n4"></div>
+                <button data-id="19" class="auth-btn" id="login-btn-ml-o5p6">SEND MAGIC LINK</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ====== APP (hidden until authenticated) ====== -->
+    <div data-id="20" id="app-wrapper" style="display: none;">
+        <header data-id="21" class="px-4 md:px-8 py-4 md:py-5 flex items-center justify-between border-b border-bg-600" id="header-main-h3k9">
+            <div data-id="22" class="flex items-center gap-3" id="header-left-v2m1">
+                <div data-id="23">
+                    <div data-id="24" class="flex items-center gap-3">
+                        <h1 data-id="25" class="font-display text-xl md:text-3xl text-accent-500 tracking-wider leading-tight" id="band-name-t8m2">DIRTY DIAPERZ</h1>
+                    </div>
+                    <p data-id="26" class="text-txt-300 text-xs md:text-sm font-medium tracking-wide" id="subtitle-s4n7">Setlist Builder</p>
+                </div>
+            </div>
+            <button data-id="27" class="signout-btn" id="signout-btn-q8r9">Sign out</button>
+        </header>
+
+        <div data-id="28" class="mobile-tab-bar" id="mobile-tab-bar">
+            <button data-id="29" class="mobile-tab active" id="tab-songs-btn">🎵 SONGS</button>
+            <button data-id="30" class="mobile-tab" id="tab-setlist-btn">📋 SETLIST <span data-id="31" class="mobile-tab-badge" id="mobile-setlist-badge">0</span></button>
+        </div>
+
+        <main data-id="32" class="px-4 md:px-8 py-4 md:py-6 max-w-[1400px] mx-auto">
+            <div data-id="33" class="main-grid flex gap-6" id="main-grid-g7h8">
+
+                <div data-id="34" class="col-left" style="width: 55%; flex-shrink: 0;" id="col-left-i9j0">
+                    <div data-id="35" class="relative mb-4" id="search-wrap-k1l2">
+                        <i data-id="36" data-lucide="search" class="w-5 h-5 absolute left-4 top-1/2 -translate-y-1/2 text-txt-500"></i>
+                        <input data-id="37" type="text" id="search-input-m3n4" class="search-input" placeholder="Search by title or artist…" />
+                    </div>
+
+                    <div data-id="38" id="song-list-container-o5p6" class="rounded-xl border border-bg-600 overflow-hidden scrollable-panel" style="max-height: 60vh; overflow-y: auto;">
+                    </div>
+
+                    <div data-id="39" class="mt-4 flex items-center justify-between px-2" id="selection-summary-q7r8">
+                        <span data-id="40" class="text-sm text-txt-300">
+                            <span data-id="41" id="selected-count-s9t0" class="font-semibold text-accent-500">0</span> songs selected
+                        </span>
+                        <span data-id="42" class="text-sm text-txt-400">
+                            Total: <span data-id="43" id="selected-total-time-u1v2" class="font-semibold text-txt-200 tabular-nums">0:00</span>
+                        </span>
+                    </div>
+                </div>
+
+                <div data-id="44" class="col-right" style="width: 45%;" id="col-right-w3x4">
+                    <div data-id="45" class="flex items-center justify-between mb-4" id="setlist-header-r4s5">
+                        <div data-id="46">
+                            <h2 data-id="47" class="font-display text-lg text-accent-500 tracking-wider" id="setlist-title-y5z6">YOUR SETLIST</h2>
+                            <p data-id="48" class="text-xs text-txt-500 mt-1 flex items-center gap-1 desktop-only" id="drag-hint-t6u7">
+                                <i data-id="49" data-lucide="grip-vertical" class="w-3 h-3"></i>
+                                drag to reorder
+                            </p>
+                            <p data-id="50" class="text-xs text-txt-500 mt-1 flex items-center gap-1 md:hidden" id="drag-hint-touch">
+                                hold &amp; drag to reorder
+                            </p>
+                        </div>
+                        <div data-id="51" id="setlist-runtime-a7b8" class="text-right">
+                            <span data-id="52" class="text-xs text-txt-500 uppercase tracking-wide">Runtime</span>
+                            <p data-id="53" class="text-lg font-bold text-txt-100 tabular-nums" id="total-runtime-c9d0">0:00</p>
+                        </div>
+                    </div>
+
+                    <div data-id="54" id="setlist-cards-container-e1f2" class="scrollable-panel" style="max-height: 58vh; overflow-y: auto; padding-right: 4px;">
+                        <div data-id="55" id="empty-state-g3h4" class="text-center py-16 px-5">
+                            <i data-id="56" data-lucide="arrow-left" class="w-10 h-10 text-txt-500 mx-auto mb-4"></i>
+                            <p data-id="57" class="text-txt-400 text-sm font-medium">Pick songs from the list to build your setlist</p>
+                        </div>
+                    </div>
+
+                    <div data-id="58" class="mt-5" id="generate-wrap-i5j6" style="padding-bottom: env(safe-area-inset-bottom, 0px);">
+                        <button data-id="59" id="generate-btn-k7l8" class="btn-generate" disabled>
+                            <i data-id="60" data-lucide="printer" class="w-5 h-5"></i>
+                            GENERATE SETLIST
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <footer data-id="61" class="py-6 text-center border-t border-bg-600 mt-8" id="footer-m9n0" style="padding-bottom: calc(16px + env(safe-area-inset-bottom, 0px));">
+            <p data-id="62" class="text-xs text-txt-500">Made by Copilot</p>
+        </footer>
+    </div>
+
+    <script>
+    (function() {
+        "use strict";
+
+        // ====== ICONS (guarded — lucide loads with defer) ======
+        function initIcons() {
+            if (typeof lucide !== "undefined" && typeof lucide.createIcons === "function") {
+                lucide.createIcons();
+            }
+        }
+        // Run now if already loaded, otherwise wait for DOMContentLoaded / load
+        initIcons();
+        document.addEventListener("DOMContentLoaded", initIcons);
+        window.addEventListener("load", initIcons);
+
+        // ====== SUPABASE CONFIG ======
+        var SUPABASE_URL = 'https://ejdpcizxmbvxbzipwsfb.supabase.co';
+        var SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVqZHBjaXp4bWJ2eGJ6aXB3c2ZiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODc0NDQ5NjYsImV4cCI6MjEwMzAyMDk2Nn0.l7VcCI-7cuQ7il0EIBWlQrI5ATfOvTRt7xSDsOP7gFM';
+
+        var supabaseClient = null;
+        if (typeof supabase !== "undefined" && supabase.createClient) {
+            supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        }
+
+        // ====== AUTH ELEMENTS ======
+        var loginScreen = document.getElementById("login-screen");
+        var appWrapper = document.getElementById("app-wrapper");
+        var authTabPassword = document.getElementById("auth-tab-password");
+        var authTabMagic = document.getElementById("auth-tab-magic");
+        var authFormPassword = document.getElementById("auth-form-password");
+        var authFormMagic = document.getElementById("auth-form-magic");
+        var loginEmailPw = document.getElementById("login-email-pw-a1b2");
+        var loginPassword = document.getElementById("login-password-c3d4");
+        var loginErrorPw = document.getElementById("login-error-pw-e5f6");
+        var loginBtnPw = document.getElementById("login-btn-pw-g7h8");
+        var loginEmailMl = document.getElementById("login-email-ml-i9j0");
+        var loginErrorMl = document.getElementById("login-error-ml-k1l2");
+        var loginSuccessMl = document.getElementById("login-success-ml-m3n4");
+        var loginBtnMl = document.getElementById("login-btn-ml-o5p6");
+        var signoutBtn = document.getElementById("signout-btn-q8r9");
+
+        // ====== AUTH TAB SWITCHING ======
+        authTabPassword.addEventListener("click", function() {
+            authTabPassword.classList.add("active");
+            authTabMagic.classList.remove("active");
+            authFormPassword.style.display = "block";
+            authFormMagic.style.display = "none";
+            loginErrorPw.textContent = "";
+        });
+
+        authTabMagic.addEventListener("click", function() {
+            authTabMagic.classList.add("active");
+            authTabPassword.classList.remove("active");
+            authFormMagic.style.display = "block";
+            authFormPassword.style.display = "none";
+            loginErrorMl.textContent = "";
+            loginSuccessMl.textContent = "";
+        });
+
+        // ====== AUTH: PASSWORD SIGN IN ======
+        loginBtnPw.addEventListener("click", async function() {
+            var email = loginEmailPw.value.trim();
+            var password = loginPassword.value;
+            loginErrorPw.textContent = "";
+
+            if (!email) {
+                loginErrorPw.textContent = "Please enter your email address.";
+                return;
+            }
+            if (!password) {
+                loginErrorPw.textContent = "Please enter your password.";
+                return;
+            }
+
+            loginBtnPw.disabled = true;
+            loginBtnPw.innerHTML = '<span class="auth-spinner"></span>';
+
+            try {
+                var result = await supabaseClient.auth.signInWithPassword({ email: email, password: password });
+                if (result.error) {
+                    loginErrorPw.textContent = result.error.message || "Sign in failed. Please try again.";
+                    loginBtnPw.disabled = false;
+                    loginBtnPw.textContent = "SIGN IN";
+                }
+                // Success handled by onAuthStateChange
+            } catch (err) {
+                loginErrorPw.textContent = "An unexpected error occurred. Please try again.";
+                loginBtnPw.disabled = false;
+                loginBtnPw.textContent = "SIGN IN";
+            }
+        });
+
+        // Allow Enter key on password field
+        loginPassword.addEventListener("keydown", function(e) {
+            if (e.key === "Enter") {
+                loginBtnPw.click();
+            }
+        });
+        loginEmailPw.addEventListener("keydown", function(e) {
+            if (e.key === "Enter") {
+                loginPassword.focus();
+            }
+        });
+
+        // ====== AUTH: MAGIC LINK ======
+        loginBtnMl.addEventListener("click", async function() {
+            var email = loginEmailMl.value.trim();
+            loginErrorMl.textContent = "";
+            loginSuccessMl.textContent = "";
+
+            if (!email) {
+                loginErrorMl.textContent = "Please enter your email address.";
+                return;
+            }
+
+            loginBtnMl.disabled = true;
+            loginBtnMl.innerHTML = '<span class="auth-spinner"></span>';
+
+            try {
+                var result = await supabaseClient.auth.signInWithOtp({
+                    email: email,
+                    options: { emailRedirectTo: window.location.origin }
+                });
+                if (result.error) {
+                    loginErrorMl.textContent = result.error.message || "Failed to send magic link.";
+                } else {
+                    loginSuccessMl.textContent = "Magic link sent! Check your email inbox.";
+                }
+            } catch (err) {
+                loginErrorMl.textContent = "An unexpected error occurred. Please try again.";
+            }
+            loginBtnMl.disabled = false;
+            loginBtnMl.textContent = "SEND MAGIC LINK";
+        });
+
+        loginEmailMl.addEventListener("keydown", function(e) {
+            if (e.key === "Enter") {
+                loginBtnMl.click();
+            }
+        });
+
+        // ====== AUTH: SIGN OUT ======
+        signoutBtn.addEventListener("click", async function() {
+            try {
+                await supabaseClient.auth.signOut();
+            } catch (err) {
+                // Force UI to login on error too
+            }
+            showLogin();
+        });
+
+        // ====== AUTH: SHOW/HIDE ======
+        function showLogin() {
+            loginScreen.style.display = "flex";
+            appWrapper.style.display = "none";
+            // Reset forms
+            loginEmailPw.value = "";
+            loginPassword.value = "";
+            loginErrorPw.textContent = "";
+            loginEmailMl.value = "";
+            loginErrorMl.textContent = "";
+            loginSuccessMl.textContent = "";
+            loginBtnPw.disabled = false;
+            loginBtnPw.textContent = "SIGN IN";
+            loginBtnMl.disabled = false;
+            loginBtnMl.textContent = "SEND MAGIC LINK";
+        }
+
+        function showApp() {
+            loginScreen.style.display = "none";
+            appWrapper.style.display = "block";
+            // Re-render icons now that app wrapper is visible
+            initIcons();
+            // Initialize the app content if not already done
+            if (!appInitialized) {
+                appInitialized = true;
+                initApp();
+            }
+        }
+
+        var appInitialized = false;
+
+        // ====== AUTH: SESSION CHECK ON LOAD ======
+        async function checkSession() {
+            if (!supabaseClient) {
+                showLogin();
+                return;
+            }
+            try {
+                var result = await supabaseClient.auth.getSession();
+                if (result.data && result.data.session) {
+                    showApp();
+                } else {
+                    showLogin();
+                }
+            } catch (err) {
+                showLogin();
+            }
+        }
+
+        // ====== AUTH: STATE CHANGE LISTENER ======
+        if (supabaseClient) {
+            supabaseClient.auth.onAuthStateChange(function(event, session) {
+                if (event === "SIGNED_IN" && session) {
+                    showApp();
+                } else if (event === "SIGNED_OUT") {
+                    showLogin();
+                }
+            });
+        }
+
+        // ====== STATE ======
+        var allSongs = [];
+        var selectedIds = {};
+        var setlistOrder = [];
+        var songNotes = {};
+        var draggedId = null;
+        var currentMobileTab = "songs";
+
+        // ====== HELPERS ======
+        function safeDuration(sec) {
+            return (sec && sec > 0) ? sec : 0;
+        }
+
+        function formatDuration(sec) {
+            if (!sec || sec <= 0) return "\u2014:\u2014\u2014";
+            var m = Math.floor(sec / 60);
+            var s = sec % 60;
+            return m + ":" + (s < 10 ? "0" : "") + s;
+        }
+
+        function safeBpm(val) {
+            return (val && val > 0) ? val : "\u2014";
+        }
+
+        function safeStr(val, fallback) {
+            if (val === null || val === undefined) return (fallback !== undefined) ? fallback : "";
+            return String(val);
+        }
+
+        function totalDuration(ids) {
+            var sum = 0;
+            for (var i = 0; i < ids.length; i++) {
+                var song = getSongById(ids[i]);
+                if (song) sum += safeDuration(song.duration_seconds);
+            }
+            return sum;
+        }
+
+        function getSongById(id) {
+            for (var i = 0; i < allSongs.length; i++) {
+                if (allSongs[i].id === id) return allSongs[i];
+            }
+            return null;
+        }
+
+        function escapeHtml(str) {
+            if (!str) return "";
+            return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+        }
+
+        function formatShowDate() {
+            var days = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+            var months = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+            var d = new Date();
+            return days[d.getDay()] + ", " + months[d.getMonth()] + " " + d.getDate() + ", " + d.getFullYear();
+        }
+
+        function isMobile() {
+            return window.innerWidth < 768;
+        }
+
+        function sortByTitleAlpha(arr) {
+            return arr.slice().sort(function(a, b) {
+                return (a.title || "").localeCompare(b.title || "", undefined, { sensitivity: 'base' });
+            });
+        }
+
+        // ====== MOBILE TABS ======
+        function switchMobileTab(tab) {
+            currentMobileTab = tab;
+            var tabSongsBtn = document.getElementById("tab-songs-btn");
+            var tabSetlistBtn = document.getElementById("tab-setlist-btn");
+            var colLeft = document.getElementById("col-left-i9j0");
+            var colRight = document.getElementById("col-right-w3x4");
+
+            if (tab === "songs") {
+                tabSongsBtn.classList.add("active");
+                tabSetlistBtn.classList.remove("active");
+                colLeft.classList.remove("hidden-mobile");
+                colRight.classList.remove("visible-mobile");
+            } else {
+                tabSetlistBtn.classList.add("active");
+                tabSongsBtn.classList.remove("active");
+                colLeft.classList.add("hidden-mobile");
+                colRight.classList.add("visible-mobile");
+            }
+        }
+
+        function updateMobileSetlistBadge() {
+            var badge = document.getElementById("mobile-setlist-badge");
+            if (badge) badge.textContent = setlistOrder.length;
+        }
+
+        // ====== INITIALIZE SONGS ======
+        function initializeSongs(songs) {
+            allSongs = songs;
+            songNotes = {};
+            allSongs.forEach(function(s) {
+                songNotes[s.id] = s.notes || "";
+            });
+            renderSongList("");
+            renderSetlist();
+            updateSummary();
+        }
+
+        // ====== SHOW ERROR STATE ======
+        function showSongListError(message, detail) {
+            var container = document.getElementById("song-list-container-o5p6");
+            container.innerHTML = "";
+
+            var errorDiv = document.createElement("div");
+            errorDiv.className = "error-state";
+
+            errorDiv.innerHTML = '<svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>' +
+                '<p>' + escapeHtml(message) + '</p>' +
+                (detail ? '<p class="error-detail">' + escapeHtml(detail) + '</p>' : '') +
+                '<button class="retry-btn" id="retry-fetch-btn">Retry</button>';
+
+            container.appendChild(errorDiv);
+
+            var retryBtn = document.getElementById("retry-fetch-btn");
+            if (retryBtn) {
+                retryBtn.addEventListener("click", function() {
+                    container.innerHTML = '<div class="p-8 text-center text-txt-500 text-sm">Loading songs\u2026</div>';
+                    fetchSongsFromSupabase();
+                });
+            }
+        }
+
+        // ====== SUPABASE FETCH ======
+        // BUG FIX #1: Removed .order('order_index', { ascending: true }) — that column
+        // does not exist in the table. Songs are sorted A-Z client-side after fetching.
+        async function fetchSongsFromSupabase() {
+            if (!supabaseClient) {
+                showSongListError(
+                    "Unable to connect to the database",
+                    "Supabase client could not be initialized. Please refresh the page."
+                );
+                return;
+            }
+
+            try {
+                var result = await supabaseClient
+                    .from('songs')
+                    .select('*');
+
+                var data = result.data;
+                var error = result.error;
+
+                if (error) {
+                    showSongListError(
+                        "Failed to load songs",
+                        error.message || "A database error occurred. Please try again."
+                    );
+                    return;
+                }
+
+                if (!data || data.length === 0) {
+                    showSongListError(
+                        "No songs found",
+                        "The song library is empty. Add songs to your Supabase database to get started."
+                    );
+                    return;
+                }
+
+                var mappedSongs = data.map(function(song) {
+                    return {
+                        id: song.id,
+                        title: song.title || '',
+                        artist: song.artist || '',
+                        key_sig: song.key_sig || '',
+                        time_sig: song.time_sig || '4/4',
+                        duration_seconds: song.duration_seconds || 0,
+                        bpm: song.bpm || null,
+                        bpm_drums: song.bpm_drums || song.bpm || null,
+                        notes: song.notes || song.cue_notes || '',
+                        order_index: song.order_index
+                    };
+                });
+
+                initializeSongs(mappedSongs);
+
+            } catch (e) {
+                showSongListError(
+                    "Connection error",
+                    "Could not reach the database. Check your internet connection and try again."
+                );
+            }
+        }
+
+        // ====== RENDER SONG LIST ======
+        function renderSongList(filter) {
+            var container = document.getElementById("song-list-container-o5p6");
+            container.innerHTML = "";
+            var q = (filter || "").toLowerCase().trim();
+            var filtered = [];
+            for (var i = 0; i < allSongs.length; i++) {
+                var s = allSongs[i];
+                var titleLower = (s.title || "").toLowerCase();
+                var artistLower = (s.artist || "").toLowerCase();
+                if (!q || titleLower.indexOf(q) !== -1 || artistLower.indexOf(q) !== -1) {
+                    filtered.push(s);
+                }
+            }
+
+            filtered = sortByTitleAlpha(filtered);
+
+            if (filtered.length === 0) {
+                var noMatch = document.createElement("div");
+                noMatch.className = "p-8 text-center text-txt-500 text-sm";
+                noMatch.textContent = "No songs match your search";
+                container.appendChild(noMatch);
+                return;
+            }
+
+            for (var j = 0; j < filtered.length; j++) {
+                var song = filtered[j];
+                var isSelected = !!selectedIds[song.id];
+
+                var row = document.createElement("div");
+                row.className = "song-row border-b border-bg-700" + (isSelected ? " selected" : "");
+                row.setAttribute("data-song-id", song.id);
+
+                var checkBox = document.createElement("div");
+                checkBox.className = "check-box";
+                if (isSelected) {
+                    checkBox.innerHTML = '<svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6.5L4.5 9L10 3" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+                }
+
+                var infoDiv = document.createElement("div");
+                infoDiv.className = "flex-1 min-w-0";
+
+                var titleP = document.createElement("p");
+                titleP.className = "text-sm font-semibold text-txt-100 truncate";
+                titleP.textContent = song.title || "\u2014";
+
+                var artistP = document.createElement("p");
+                artistP.className = "text-xs text-txt-400 truncate";
+                artistP.textContent = song.artist || "";
+
+                infoDiv.appendChild(titleP);
+                infoDiv.appendChild(artistP);
+
+                var bpmBadge = document.createElement("span");
+                bpmBadge.className = "badge-bpm hidden md:inline-block";
+                bpmBadge.textContent = safeBpm(song.bpm) + " BPM";
+
+                var durSpan = document.createElement("span");
+                durSpan.className = "text-xs text-txt-500 tabular-nums whitespace-nowrap";
+                durSpan.style.minWidth = "36px";
+                durSpan.style.textAlign = "right";
+                durSpan.textContent = formatDuration(song.duration_seconds);
+
+                row.appendChild(checkBox);
+                row.appendChild(infoDiv);
+                row.appendChild(bpmBadge);
+                row.appendChild(durSpan);
+
+                (function(songId) {
+                    row.addEventListener("click", function() {
+                        toggleSong(songId);
+                    });
+                })(song.id);
+
+                container.appendChild(row);
+            }
+        }
+
+        // ====== TOGGLE SONG ======
+        function toggleSong(id) {
+            var wasAdding = !selectedIds[id];
+            if (selectedIds[id]) {
+                delete selectedIds[id];
+                var newOrder = [];
+                for (var i = 0; i < setlistOrder.length; i++) {
+                    if (setlistOrder[i] !== id) newOrder.push(setlistOrder[i]);
+                }
+                setlistOrder = newOrder;
+            } else {
+                selectedIds[id] = true;
+                setlistOrder.push(id);
+            }
+            var searchVal = document.getElementById("search-input-m3n4").value;
+            renderSongList(searchVal);
+            renderSetlist();
+            updateSummary();
+            updateMobileSetlistBadge();
+
+            if (wasAdding && isMobile()) {
+                setTimeout(function() {
+                    switchMobileTab("setlist");
+                }, 300);
+            }
+        }
+
+        // ====== TOUCH DRAG AND DROP ======
+        function addTouchDrag(card, cardId) {
+            var startY = 0;
+            var startIndex = 0;
+            var isDragging = false;
+            var cardHeight = 0;
+
+            card.addEventListener('touchstart', function(e) {
+                var target = e.target;
+                if (target.tagName === 'TEXTAREA' || target.tagName === 'BUTTON' || target.tagName === 'INPUT') return;
+                var parent = target.parentElement;
+                if (parent && (parent.tagName === 'BUTTON' || parent.classList.contains('remove-btn'))) return;
+
+                var container = document.getElementById("setlist-cards-container-e1f2");
+                var cards = container.querySelectorAll(".setlist-card");
+                startIndex = Array.from(cards).indexOf(card);
+                startY = e.touches[0].clientY;
+                cardHeight = card.offsetHeight + 12;
+                isDragging = true;
+                card.classList.add("touch-dragging");
+            }, { passive: true });
+
+            card.addEventListener('touchmove', function(e) {
+                if (!isDragging) return;
+                e.preventDefault();
+                var currentY = e.touches[0].clientY;
+                var diff = currentY - startY;
+                card.style.transform = 'translateY(' + diff + 'px)';
+                card.style.position = 'relative';
+                card.style.zIndex = '100';
+            }, { passive: false });
+
+            card.addEventListener('touchend', function(e) {
+                if (!isDragging) return;
+                isDragging = false;
+                var currentY = e.changedTouches[0].clientY;
+                card.style.transform = '';
+                card.style.position = '';
+                card.style.zIndex = '';
+                card.classList.remove("touch-dragging");
+
+                var diff = currentY - startY;
+                var indexDelta = Math.round(diff / cardHeight);
+                var newIndex = Math.max(0, Math.min(setlistOrder.length - 1, startIndex + indexDelta));
+
+                if (newIndex !== startIndex) {
+                    var item = setlistOrder.splice(startIndex, 1)[0];
+                    setlistOrder.splice(newIndex, 0, item);
+                    renderSetlist();
+                    updateSummary();
+                }
+            }, { passive: true });
+
+            card.addEventListener('touchcancel', function() {
+                isDragging = false;
+                card.style.transform = '';
+                card.style.position = '';
+                card.style.zIndex = '';
+                card.classList.remove("touch-dragging");
+            }, { passive: true });
+        }
+
+        // ====== RENDER SETLIST ======
+        function renderSetlist() {
+            var container = document.getElementById("setlist-cards-container-e1f2");
+            var genBtn = document.getElementById("generate-btn-k7l8");
+            container.innerHTML = "";
+
+            updateMobileSetlistBadge();
+
+            if (setlistOrder.length === 0) {
+                genBtn.disabled = true;
+                var emptyDiv = document.createElement("div");
+                emptyDiv.className = "text-center py-16 px-5";
+                emptyDiv.innerHTML = '<svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#606060" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin:0 auto 16px;"><path d="M12 19l-7-7 7-7"/><path d="M19 12H5"/></svg><p class="text-txt-400 text-sm font-medium">Pick songs from the list to build your setlist</p>';
+                container.appendChild(emptyDiv);
+                return;
+            }
+
+            genBtn.disabled = false;
+
+            for (var i = 0; i < setlistOrder.length; i++) {
+                var id = setlistOrder[i];
+                var song = getSongById(id);
+                if (!song) continue;
+
+                var card = document.createElement("div");
+                card.className = "setlist-card";
+                card.setAttribute("draggable", "true");
+                card.setAttribute("data-setlist-id", id);
+
+                var removeBtn = document.createElement("button");
+                removeBtn.className = "remove-btn";
+                removeBtn.setAttribute("aria-label", "Remove song");
+                removeBtn.setAttribute("data-remove-id", id);
+                removeBtn.innerHTML = '<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 3L11 11M3 11L11 3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>';
+
+                (function(sid) {
+                    removeBtn.addEventListener("click", function(e) {
+                        e.stopPropagation();
+                        toggleSong(sid);
+                    });
+                })(id);
+
+                var flexWrap = document.createElement("div");
+                flexWrap.className = "flex items-start gap-3";
+
+                var leftCol = document.createElement("div");
+                leftCol.className = "flex flex-col items-center gap-1 pt-1";
+                leftCol.style.cursor = "grab";
+
+                var dragHandle = document.createElement("span");
+                dragHandle.className = "text-txt-500 text-xs select-none";
+                dragHandle.textContent = "\u2807";
+
+                var numBadge = document.createElement("span");
+                numBadge.className = "number-badge";
+                numBadge.textContent = (i + 1);
+
+                leftCol.appendChild(dragHandle);
+                leftCol.appendChild(numBadge);
+
+                var rightCol = document.createElement("div");
+                rightCol.className = "flex-1 min-w-0 pr-8";
+
+                var cardTitle = document.createElement("p");
+                cardTitle.className = "font-semibold text-sm text-txt-100 truncate";
+                cardTitle.textContent = song.title || "\u2014";
+
+                var cardArtist = document.createElement("p");
+                cardArtist.className = "text-xs text-txt-400 mb-2";
+                cardArtist.textContent = song.artist || "";
+
+                var displayKey = safeStr(song.key_sig, "\u2014") || "\u2014";
+                var displayTime = safeStr(song.time_sig, "4/4") || "4/4";
+
+                var infoRow1 = document.createElement("div");
+                infoRow1.className = "flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-txt-300 mb-1";
+                infoRow1.innerHTML = "Key: <strong class='text-txt-200'>" + escapeHtml(displayKey) + "</strong> <span class='text-txt-500'>|</span> Time: <strong class='text-txt-200'>" + escapeHtml(displayTime) + "</strong> <span class='text-txt-500'>|</span> <span class='tabular-nums'>" + formatDuration(song.duration_seconds) + "</span>";
+
+                var infoRow2 = document.createElement("div");
+                infoRow2.className = "flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-txt-400 mb-2";
+                infoRow2.innerHTML = "BPM: <strong class='text-accent-400'>" + safeBpm(song.bpm) + "</strong> <span class='text-txt-500'>|</span> Drums: <strong class='text-accent-400'>" + safeBpm(song.bpm_drums) + "</strong>";
+
+                var textarea = document.createElement("textarea");
+                textarea.className = "notes-textarea";
+                textarea.rows = 2;
+                textarea.placeholder = "Notes\u2026";
+                textarea.setAttribute("data-notes-id", id);
+                textarea.value = songNotes[id] || "";
+
+                (function(sid) {
+                    textarea.addEventListener("input", function() {
+                        songNotes[sid] = this.value;
+                    });
+                })(id);
+
+                rightCol.appendChild(cardTitle);
+                rightCol.appendChild(cardArtist);
+                rightCol.appendChild(infoRow1);
+                rightCol.appendChild(infoRow2);
+                rightCol.appendChild(textarea);
+
+                flexWrap.appendChild(leftCol);
+                flexWrap.appendChild(rightCol);
+
+                card.appendChild(removeBtn);
+                card.appendChild(flexWrap);
+
+                (function(cardEl, cardIdLocal) {
+                    cardEl.addEventListener("dragstart", function(e) {
+                        draggedId = cardIdLocal;
+                        cardEl.classList.add("dragging");
+                        e.dataTransfer.effectAllowed = "move";
+                        e.dataTransfer.setData("text/plain", String(cardIdLocal));
+                    });
+                    cardEl.addEventListener("dragend", function() {
+                        cardEl.classList.remove("dragging");
+                        var allCards = container.querySelectorAll(".setlist-card");
+                        for (var c = 0; c < allCards.length; c++) {
+                            allCards[c].style.borderTop = "";
+                            allCards[c].style.borderBottom = "";
+                        }
+                        draggedId = null;
+                    });
+                    cardEl.addEventListener("dragover", function(e) {
+                        e.preventDefault();
+                        e.dataTransfer.dropEffect = "move";
+                        var allCards = container.querySelectorAll(".setlist-card");
+                        for (var c = 0; c < allCards.length; c++) {
+                            allCards[c].style.borderTop = "";
+                            allCards[c].style.borderBottom = "";
+                        }
+                        var rect = cardEl.getBoundingClientRect();
+                        var mid = rect.top + rect.height / 2;
+                        if (e.clientY < mid) {
+                            cardEl.style.borderTop = "2px solid #FF6B00";
+                        } else {
+                            cardEl.style.borderBottom = "2px solid #FF6B00";
+                        }
+                    });
+                    cardEl.addEventListener("dragleave", function() {
+                        cardEl.style.borderTop = "";
+                        cardEl.style.borderBottom = "";
+                    });
+                    cardEl.addEventListener("drop", function(e) {
+                        e.preventDefault();
+                        cardEl.style.borderTop = "";
+                        cardEl.style.borderBottom = "";
+                        var targetId = cardIdLocal;
+                        if (draggedId === null || draggedId === targetId) return;
+                        var fromIdx = setlistOrder.indexOf(draggedId);
+                        var toIdx = setlistOrder.indexOf(targetId);
+                        if (fromIdx === -1 || toIdx === -1) return;
+                        setlistOrder.splice(fromIdx, 1);
+                        var rect2 = cardEl.getBoundingClientRect();
+                        var mid2 = rect2.top + rect2.height / 2;
+                        var insertIdx = e.clientY < mid2 ? setlistOrder.indexOf(targetId) : setlistOrder.indexOf(targetId) + 1;
+                        if (insertIdx === -1) insertIdx = setlistOrder.length;
+                        setlistOrder.splice(insertIdx, 0, draggedId);
+                        renderSetlist();
+                        updateSummary();
+                    });
+                })(card, id);
+
+                addTouchDrag(card, id);
+
+                container.appendChild(card);
+            }
+        }
+
+        // ====== UPDATE SUMMARY ======
+        function updateSummary() {
+            var ids = Object.keys(selectedIds);
+            document.getElementById("selected-count-s9t0").textContent = ids.length;
+            var totalSec = totalDuration(setlistOrder);
+            document.getElementById("selected-total-time-u1v2").textContent = formatDuration(totalSec);
+            document.getElementById("total-runtime-c9d0").textContent = formatDuration(totalSec);
+        }
+
+        // ====== GENERATE PRINT VIEW ======
+        function generatePrintView() {
+            if (setlistOrder.length === 0) return;
+            var dateStr = formatShowDate();
+            var totalSec = totalDuration(setlistOrder);
+            var totalStr = formatDuration(totalSec);
+
+            var rows = "";
+            for (var i = 0; i < setlistOrder.length; i++) {
+                var s = getSongById(setlistOrder[i]);
+                if (!s) continue;
+                var notes = escapeHtml(songNotes[s.id] || "").replace(/\n/g, "<br>");
+                var bgColor = i % 2 === 0 ? "#222" : "#1a1a1a";
+                var printKey = safeStr(s.key_sig, "\u2014") || "\u2014";
+                var printTime = safeStr(s.time_sig, "4/4") || "4/4";
+                var printBpm = safeBpm(s.bpm);
+                var printBpmDrums = safeBpm(s.bpm_drums);
+                rows += '<tr style="background:' + bgColor + ';"><td style="padding:10px 12px;text-align:center;font-weight:700;color:#FF6B00;border-bottom:1px solid #2a2a2a;">' + (i + 1) + '</td><td style="padding:10px 12px;font-weight:600;color:#eee;border-bottom:1px solid #2a2a2a;">' + escapeHtml(s.title || "\u2014") + '</td><td style="padding:10px 12px;color:#ccc;border-bottom:1px solid #2a2a2a;">' + escapeHtml(s.artist || "") + '</td><td style="padding:10px 12px;text-align:center;color:#ccc;border-bottom:1px solid #2a2a2a;">' + escapeHtml(printKey) + '</td><td style="padding:10px 12px;text-align:center;color:#ccc;font-variant-numeric:tabular-nums;border-bottom:1px solid #2a2a2a;">' + formatDuration(s.duration_seconds) + '</td><td style="padding:10px 12px;text-align:center;color:#ccc;font-variant-numeric:tabular-nums;border-bottom:1px solid #2a2a2a;">' + printBpm + ' / ' + printBpmDrums + '</td><td style="padding:10px 12px;color:#999;font-size:12px;line-height:1.4;max-width:200px;border-bottom:1px solid #2a2a2a;">' + (notes || "\u2014") + "</td></tr>";
+            }
+
+            var printHtml = '<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><meta name="apple-mobile-web-app-capable" content="yes"><title>Dirty Diaperz Setlist</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Russo+One&display=swap" rel="stylesheet"><style>*{box-sizing:border-box;margin:0;padding:0}body{font-family:"Inter",sans-serif;background:#0f0f0f;color:#e0e0e0;padding:0;padding-bottom:env(safe-area-inset-bottom,0)}.page-wrap{max-width:900px;margin:0 auto;padding:24px 16px}@media(min-width:768px){.page-wrap{padding:40px 32px}}.screen-buttons{display:flex;gap:12px;margin-bottom:30px;flex-wrap:wrap}.screen-buttons button{padding:10px 24px;border-radius:8px;border:none;font-family:"Inter",sans-serif;font-weight:600;font-size:14px;cursor:pointer;min-height:44px}.btn-print{background:#FF6B00;color:#fff}.btn-print:hover{background:#e06000}.btn-close{background:#333;color:#ccc}.btn-close:hover{background:#444}.header-section{text-align:center;margin-bottom:24px}.header-section h1{font-family:"Russo One",sans-serif;font-size:24px;color:#FF6B00;letter-spacing:3px;margin-bottom:8px}@media(min-width:768px){.header-section h1{font-size:32px}}.header-section p{color:#aaa;font-size:14px;margin:2px 0}.header-section hr{border:none;border-top:2px solid #333;margin-top:16px}.table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}table{width:100%;border-collapse:collapse;background:#1c1c1c;border-radius:8px;overflow:hidden;min-width:600px}thead th{background:#FF6B00;color:#fff;text-align:left;padding:12px;font-size:12px;text-transform:uppercase;letter-spacing:.5px;font-weight:700}thead th:nth-child(1),thead th:nth-child(4),thead th:nth-child(5),thead th:nth-child(6){text-align:center}tbody tr{border-bottom:1px solid #2a2a2a}.footer-print{text-align:center;margin-top:24px;color:#555;font-size:12px}@media print{body{background:#fff!important;color:#000!important;padding:0}.screen-buttons{display:none!important}.page-wrap{padding:20px;max-width:100%}.header-section h1{color:#FF6B00!important}.header-section p{color:#333!important}.header-section hr{border-top-color:#ccc!important}.table-wrap{overflow:visible}table{background:#fff!important;min-width:0}thead th{background:#FF6B00!important;color:#fff!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}tbody td{color:#333!important}tbody td:first-child{color:#FF6B00!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}tbody td:nth-child(2){color:#111!important}tbody tr:nth-child(even){background:#f5f5f5!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}tbody tr:nth-child(odd){background:#fff!important}tbody tr{page-break-inside:avoid}.footer-print{color:#999!important}}</style></head><body><div class="page-wrap"><div class="screen-buttons"><button id="printBtn">&#128424; Print / Save as PDF</button><button id="closeBtn" class="btn-close">&#10005; Close</button></div><div class="header-section"><h1>DIRTY DIAPERZ</h1><p style="font-size:16px;color:#ccc;font-weight:600;">Show Setlist</p><p>Date: ' + dateStr + '</p><p>Total Runtime: ' + totalStr + ' &bull; ' + setlistOrder.length + ' songs</p><hr></div><div class="table-wrap"><table><thead><tr><th style="width:40px">#</th><th>Song Title</th><th>Artist</th><th style="width:80px">Key</th><th style="width:60px">Length</th><th style="width:110px">BPM Studio/Drums</th><th style="width:200px">Notes</th></tr></thead><tbody>' + rows + '</tbody></table></div><p class="footer-print">Generated by Dirty Diaperz Setlist Builder &bull; ' + dateStr + '</p></div>';
+
+            printHtml += '<scr' + 'ipt>document.getElementById("printBtn").addEventListener("click",function(){window.print()});document.getElementById("closeBtn").addEventListener("click",function(){window.close()});</scr' + 'ipt></body></html>';
+
+            var printWin = window.open("", "_blank");
+            if (printWin) {
+                printWin.document.write(printHtml);
+                printWin.document.close();
+            }
+        }
+
+        // ====== MOBILE TABS SETUP ======
+        function setupMobileTabs() {
+            var tabSongsBtn = document.getElementById("tab-songs-btn");
+            var tabSetlistBtn = document.getElementById("tab-setlist-btn");
+
+            if (!tabSongsBtn || !tabSetlistBtn) return;
+
+            tabSongsBtn.addEventListener("click", function() { switchMobileTab("songs"); });
+            tabSetlistBtn.addEventListener("click", function() { switchMobileTab("setlist"); });
+
+            function onResize() {
+                if (window.innerWidth >= 768) {
+                    var colLeft = document.getElementById("col-left-i9j0");
+                    var colRight = document.getElementById("col-right-w3x4");
+                    colLeft.classList.remove("hidden-mobile");
+                    colRight.classList.remove("visible-mobile");
+                } else {
+                    switchMobileTab(currentMobileTab);
+                }
+            }
+            window.addEventListener("resize", onResize);
+            if (window.innerWidth < 768) switchMobileTab("songs");
+        }
+
+        // ====== SEARCH ======
+        document.getElementById("search-input-m3n4").addEventListener("input", function(e) {
+            renderSongList(e.target.value);
+        });
+
+        // ====== GENERATE BUTTON ======
+        document.getElementById("generate-btn-k7l8").addEventListener("click", function() {
+            generatePrintView();
+        });
+
+        // ====== INIT APP (called after auth) ======
+        function initApp() {
+            setupMobileTabs();
+
+            var songListContainer = document.getElementById("song-list-container-o5p6");
+            songListContainer.innerHTML = '<div class="p-8 text-center text-txt-500 text-sm">Loading songs\u2026</div>';
+
+            fetchSongsFromSupabase();
+        }
+
+        // ====== START: Check session ======
+        // BUG FIX #2: Ensure login screen shows by default.
+        // checkSession() calls getSession() and only shows the app if an active session exists.
+        // The login screen is visible (display:flex) and app-wrapper hidden (display:none) in the HTML,
+        // so even if this code fails, the login screen is what the user sees.
+        if (document.readyState === "loading") {
+            document.addEventListener("DOMContentLoaded", function() {
+                checkSession();
+            });
+        } else {
+            checkSession();
+        }
+    })();
+    </script>
+</body>
+</html>
