@@ -408,6 +408,12 @@
             return window.innerWidth < 768;
         }
 
+        function sortByTitleAlpha(arr) {
+            return arr.slice().sort(function(a, b) {
+                return (a.title || "").localeCompare(b.title || "", undefined, { sensitivity: 'base' });
+            });
+        }
+
         // ====== MOBILE TABS ======
         function switchMobileTab(tab) {
             currentMobileTab = tab;
@@ -522,6 +528,9 @@
                     filtered.push(s);
                 }
             }
+
+            // Sort filtered results alphabetically by title (case-insensitive A-Z)
+            filtered = sortByTitleAlpha(filtered);
 
             if (filtered.length === 0) {
                 var noMatch = document.createElement("div");
